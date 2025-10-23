@@ -106,7 +106,7 @@ class TelemetryInfoCard extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: _buildDataItem(
-              icon: Icons.trending_up, // CORRIGIDO: era speedometer
+              icon: Icons.trending_up,
               label: 'Aceleração',
               value: _formatAcceleration(),
               color: AppColors.warning,
@@ -173,7 +173,7 @@ class TelemetryInfoCard extends StatelessWidget {
 
   String _formatSpeed() {
     if (currentLocation?.speedKmh == null) {
-      return '0 km/h';
+      return '0.0 km/h';
     }
     return '${currentLocation!.speedKmh!.toStringAsFixed(1)} km/h';
   }

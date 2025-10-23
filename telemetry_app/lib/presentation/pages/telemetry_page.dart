@@ -130,8 +130,8 @@ class _TelemetryPageState extends State<TelemetryPage> {
     return FloatingActionButton(
       onPressed: () => _handleToggleTelemetry(provider),
       backgroundColor: provider.isCollecting 
-        ? AppColors.error 
-        : AppColors.success,
+        ? AppColors.error  // Vermelho quando coletando (para parar)
+        : AppColors.success, // Verde quando parado (para iniciar)
       child: Icon(
         provider.isCollecting ? Icons.stop : Icons.play_arrow,
         color: AppColors.textPrimary,
@@ -142,8 +142,10 @@ class _TelemetryPageState extends State<TelemetryPage> {
 
   void _handleToggleTelemetry(TelemetryProvider provider) async {
     if (provider.isCollecting) {
+      // Se está coletando, PARA a coleta
       await provider.stopTelemetry();
     } else {
+      // Se não está coletando, INICIA a coleta
       if (!provider.hasPermissions) {
         await provider.requestPermissions();
       }

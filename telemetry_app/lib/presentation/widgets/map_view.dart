@@ -44,7 +44,7 @@ class MapView extends StatelessWidget {
       return _buildErrorWidget(context);
     }
 
-    if (isLoading) {
+    if (isLoading && currentLocation == null) {
       return _buildLoadingWidget(context);
     }
 
@@ -96,7 +96,7 @@ class MapView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Carregando mapa...',
+              'Obtendo localização...',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
@@ -168,7 +168,7 @@ class MapView extends StatelessWidget {
             BitmapDescriptor.hueBlue,
           ),
           infoWindow: InfoWindow(
-            title: 'Localização Atual',
+            title: 'Sua Localização',
             snippet: 'Lat: ${currentLocation!.latitude.toStringAsFixed(6)}\n'
                 'Lng: ${currentLocation!.longitude.toStringAsFixed(6)}',
           ),
