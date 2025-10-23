@@ -1,19 +1,15 @@
-// lib/presentation/widgets/telemetry_info_card.dart
-
 import 'package:flutter/material.dart';
 import '../../domain/entities/location.dart';
 import '../../domain/entities/acceleration.dart';
 import '../../domain/entities/heading.dart';
 import '../../core/theme/colors.dart';
 
-/// Widget responsável por exibir os dados de telemetria
 class TelemetryInfoCard extends StatelessWidget {
-  
   final Location? currentLocation;
   final Acceleration? currentAcceleration;
   final Heading? currentHeading;
   final bool isCollecting;
-  
+
   const TelemetryInfoCard({
     super.key,
     required this.currentLocation,
@@ -21,118 +17,115 @@ class TelemetryInfoCard extends StatelessWidget {
     required this.currentHeading,
     required this.isCollecting,
   });
-  
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.primary.withValues(alpha: 0.1),
-              AppColors.secondary.withValues(alpha: 0.1),
-            ],
+    return Container(
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.panelOverlayLight,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 15,
+            spreadRadius: 2,
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            const SizedBox(height: 16),
-            _buildDataGrid(),
-          ],
-        ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildHeader(),
+          _buildDataGrid(),
+        ],
       ),
     );
   }
-  
+
   Widget _buildHeader() {
-    return Row(
-      children: [
-        Icon(
-          Icons.analytics,
-          color: AppColors.primary,
-          size: 24,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.panelOverlay,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
-        const SizedBox(width: 8),
-        Text(
-          'Dados de Telemetria',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isCollecting ? Icons.gps_fixed : Icons.gps_off,
+            color: isCollecting ? AppColors.success : AppColors.textSecondary,
+            size: 24,
           ),
-        ),
-        const Spacer(),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: isCollecting ? AppColors.success : AppColors.warning,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            isCollecting ? 'COLETANDO' : 'PARADO',
-            style: TextStyle(
+          const SizedBox(width: 12),
+          Text(
+            isCollecting ? 'Telemetria Ativa' : 'Telemetria Inativa',
+            style: const TextStyle(
               color: AppColors.textPrimary,
-              fontSize: 10,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-      ],
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: isCollecting ? AppColors.success : AppColors.textSecondary,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              isCollecting ? 'ON' : 'OFF',
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
-  
+
   Widget _buildDataGrid() {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(child: _buildDataItem(
-              icon: Icons.location_on,
-              label: 'Localização',
-              value: _formatLocation(),
-              color: AppColors.primary,
-            )),
-            const SizedBox(width: 16),
-            Expanded(child: _buildDataItem(
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildDataItem(
               icon: Icons.speed,
               label: 'Velocidade',
               value: _formatSpeed(),
-              color: AppColors.accent,
-            )),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(child: _buildDataItem(
-              icon: Icons.trending_up,
+              color: AppColors.info,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildDataItem(
+              icon: Icons.trending_up, // CORRIGIDO: era speedometer
               label: 'Aceleração',
               value: _formatAcceleration(),
-              color: AppColors.success,
-            )),
-            const SizedBox(width: 16),
-            Expanded(child: _buildDataItem(
-              icon: Icons.explore,
+              color: AppColors.warning,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildDataItem(
+              icon: Icons.navigation,
               label: 'Direção',
               value: _formatHeading(),
-              color: AppColors.warning,
-            )),
-          ],
-        ),
-      ],
+              color: AppColors.success,
+            ),
+          ),
+        ],
+      ),
     );
   }
-  
+
   Widget _buildDataItem({
     required IconData icon,
     required String label,
@@ -142,60 +135,60 @@ class TelemetryInfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        color: AppColors.panelOverlay,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: color.withValues(alpha: 0.3),
+          width: 1,
+        ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(icon, color: color, size: 16),
-              const SizedBox(width: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
+          Icon(
+            icon,
+            color: color,
+            size: 24,
           ),
           const SizedBox(height: 8),
           Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 12,
             ),
           ),
         ],
       ),
     );
   }
-  
-  String _formatLocation() {
-    if (currentLocation == null) return 'N/A';
-    return '${currentLocation!.latitude.toStringAsFixed(6)}\n'
-           '${currentLocation!.longitude.toStringAsFixed(6)}';
-  }
-  
+
   String _formatSpeed() {
-    if (currentLocation?.speedKmh == null) return '0 km/h';
+    if (currentLocation?.speedKmh == null) {
+      return '0 km/h';
+    }
     return '${currentLocation!.speedKmh!.toStringAsFixed(1)} km/h';
   }
-  
+
   String _formatAcceleration() {
-    if (currentAcceleration == null) return '0 m/s²';
-    return '${currentAcceleration!.magnitude.toStringAsFixed(2)} m/s²';
+    if (currentAcceleration == null) {
+      return '0.0 m/s²';
+    }
+    return '${currentAcceleration!.magnitude.toStringAsFixed(1)} m/s²';
   }
-  
+
   String _formatHeading() {
-    if (currentHeading == null) return 'N/A';
-    return '${currentHeading!.degrees.toStringAsFixed(0)}°\n'
-           '${currentHeading!.cardinal}';
+    if (currentHeading == null) {
+      return 'N/A';
+    }
+    return currentHeading!.cardinal;
   }
 }

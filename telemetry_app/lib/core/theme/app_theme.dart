@@ -1,69 +1,79 @@
-// lib/core/theme/app_theme.dart
-
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
-/// Tema principal do app
 class AppTheme {
-  
-  /// Tema claro
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
       ),
       
-      // Configurações do AppBar
+      // AppBar 
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.primary,        // #5438ac
-        foregroundColor: AppColors.textPrimary,    // Branco
-        elevation: 2,
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.textPrimary,
+        elevation: 0,
         centerTitle: true,
       ),
       
-      // Configurações de botões
+      // Botões 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,     // #5438ac
-          foregroundColor: AppColors.textPrimary,   // Branco
+          backgroundColor: AppColors.success,
+          foregroundColor: AppColors.textPrimary,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
           ),
+          elevation: 4,
         ),
       ),
       
-      // Configurações de cards
+      // Cards
       cardTheme: CardThemeData(
-        color: AppColors.cardBackground,
-        elevation: 2,
+        color: AppColors.panelOverlayLight,
+        elevation: 8,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
         ),
+        margin: const EdgeInsets.all(8),
       ),
       
-      // Configurações de texto
+      // Texto personalizado
       textTheme: const TextTheme(
         headlineLarge: TextStyle(
-          color: AppColors.textPrimary,            // Branco
-          fontSize: 24,
+          color: AppColors.textPrimary,
+          fontSize: 28,
           fontWeight: FontWeight.bold,
         ),
         headlineMedium: TextStyle(
-          color: AppColors.textPrimary,            // Branco
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+          color: AppColors.textPrimary,
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
         ),
         bodyLarge: TextStyle(
-          color: AppColors.textPrimary,            // Branco
+          color: AppColors.textPrimary,
           fontSize: 16,
+          fontWeight: FontWeight.w500,
         ),
         bodyMedium: TextStyle(
-          color: AppColors.textSecondary,          // #5d4b7c
+          color: AppColors.textSecondary,
           fontSize: 14,
         ),
+        labelLarge: TextStyle(
+          color: AppColors.textPrimary,
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      
+      // FloatingActionButton personalizado
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: AppColors.success,
+        foregroundColor: AppColors.textPrimary,
+        elevation: 8,
       ),
     );
   }

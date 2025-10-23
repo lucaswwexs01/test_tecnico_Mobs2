@@ -1,99 +1,90 @@
-// lib/presentation/widgets/map_view.dart
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../domain/entities/location.dart';
 import '../../core/theme/colors.dart';
 
-/// Widget responsável por exibir o mapa com a localização atual
 class MapView extends StatelessWidget {
-  
   final Location? currentLocation;
   final bool isLoading;
   final String? errorMessage;
-  
+  final Function(LatLng)? onMapTap;
+  final Function(CameraPosition)? onCameraMove;
+
   const MapView({
     super.key,
     required this.currentLocation,
     this.isLoading = false,
     this.errorMessage,
+    this.onMapTap,
+    this.onCameraMove,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.accent, width: 2),
+        borderRadius: BorderRadius.circular(0),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.3),
+            blurRadius: 20,
+            spreadRadius: 5,
+          ),
+        ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: _buildMapContent(),
+        borderRadius: BorderRadius.circular(0),
+        child: _buildMapContent(context),
       ),
     );
   }
-  
-  Widget _buildMapContent() {
-    // Se há erro, mostra mensagem
+
+  Widget _buildMapContent(BuildContext context) {
     if (errorMessage != null) {
-      return _buildErrorWidget();
+      return _buildErrorWidget(context);
     }
-    
-    // Se está carregando, mostra loading
+
     if (isLoading) {
-      return _buildLoadingWidget();
+      return _buildLoadingWidget(context);
     }
-    
-    // Se não há localização, mostra placeholder
+
     if (currentLocation == null) {
-      return _buildPlaceholderWidget();
+      return _buildPlaceholderWidget(context);
     }
-    
-    // Se há localização, mostra mapa
+
     return _buildMapWidget();
   }
-  
-  Widget _buildErrorWidget() {
+
+  Widget _buildErrorWidget(BuildContext context) {
     return Container(
-      color: AppColors.error.withValues(alpha: 0.1),
+      color: AppColors.background,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.error_outline,
+              size: 64,
               color: AppColors.error,
-              size: 48,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Erro ao carregar mapa',
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Erro no GPS',
-              style: TextStyle(
-                color: AppColors.error,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.error,
-                  fontSize: 12,
-                ),
-              ),
+              errorMessage!,
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
             ),
           ],
         ),
       ),
     );
   }
-  
-  Widget _buildLoadingWidget() {
+
+  Widget _buildLoadingWidget(BuildContext context) {
     return Container(
       color: AppColors.background,
       child: Center(
@@ -101,58 +92,57 @@ class MapView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircularProgressIndicator(
-              color: AppColors.primary,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
             const SizedBox(height: 16),
             Text(
-              'Obtendo localização...',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+              'Carregando mapa...',
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
         ),
       ),
     );
   }
-  
-  Widget _buildPlaceholderWidget() {
+
+  Widget _buildPlaceholderWidget(BuildContext context) {
     return Container(
-      color: AppColors.background,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.background,
+            AppColors.secondary,
+          ],
+        ),
+      ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.location_off,
-              color: AppColors.textSecondary,
-              size: 48,
+              Icons.map_outlined,
+              size: 80,
+              color: AppColors.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Mapa não disponível',
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Aguardando localização',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Toque em "Iniciar Coleta" para começar',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 12,
-              ),
+              'Toque em "Iniciar Coleta" para ativar o GPS',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
             ),
           ],
         ),
       ),
     );
   }
-  
+
   Widget _buildMapWidget() {
     return GoogleMap(
       initialCameraPosition: CameraPosition(
@@ -162,6 +152,11 @@ class MapView extends StatelessWidget {
         ),
         zoom: 15.0,
       ),
+      onMapCreated: (GoogleMapController controller) {
+        // Controller configurado
+      },
+      onTap: onMapTap,
+      onCameraMove: onCameraMove,
       markers: {
         Marker(
           markerId: const MarkerId('current_location'),
@@ -169,21 +164,21 @@ class MapView extends StatelessWidget {
             currentLocation!.latitude,
             currentLocation!.longitude,
           ),
-          infoWindow: InfoWindow(
-            title: 'Sua localização',
-            snippet: 'Lat: ${currentLocation!.latitude.toStringAsFixed(6)}\n'
-                    'Lng: ${currentLocation!.longitude.toStringAsFixed(6)}',
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueBlue,
           ),
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          infoWindow: InfoWindow(
+            title: 'Localização Atual',
+            snippet: 'Lat: ${currentLocation!.latitude.toStringAsFixed(6)}\n'
+                'Lng: ${currentLocation!.longitude.toStringAsFixed(6)}',
+          ),
         ),
       },
-      onMapCreated: (GoogleMapController controller) {
-        // Mapa criado com sucesso
-      },
-      myLocationEnabled: true,
-      myLocationButtonEnabled: true,
-      zoomControlsEnabled: true,
       mapType: MapType.normal,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      zoomControlsEnabled: false,
+      mapToolbarEnabled: false,
       compassEnabled: true,
       rotateGesturesEnabled: true,
       scrollGesturesEnabled: true,

@@ -1,39 +1,31 @@
-// lib/core/theme/colors.dart
-
 import 'package:flutter/material.dart';
 
-/// Paleta de cores do app
 class AppColors {
-  // Cores principais 
-  static const Color primary = Color(0xFF5438AC);      // #5438ac - Roxo principal
-  static const Color secondary = Color(0xFF261055);    // #261055 - Roxo escuro
-  static const Color accent = Color(0xFF5337AB);       // #5337ab - Roxo médio
   
+  static const Color primary = Color(0xFF5438AC);      
+  static const Color secondary = Color(0xFF261055);    
+  static const Color accent = Color(0xFF5337AB);       
   // Cores de status
-  static const Color success = Color(0xFF4CAF50);       // Verde (mantido)
-  static const Color warning = Color(0xFFFF9800);       // Laranja (mantido)
-  static const Color error = Color(0xFFF44336);         // Vermelho (mantido)
-  static const Color info = Color(0xFF5438AC);          // Usando sua cor principal
-  
-  // Cores de fundo
-  static const Color background = Color(0xFFF5F5F5);   // Cinza claro (mantido)
-  static const Color surface = Color(0xFFFFFFFF);      // Branco (mantido)
-  static const Color cardBackground = Color(0xFFFFFFFF); // Branco (mantido)
+  static const Color success = Color(0xFF4CAF50);       
+  static const Color warning = Color(0xFFFFC107);      
+  static const Color error = Color(0xFFF44336);        
+  static const Color info = Color(0xFF2196F3);        
   
   // Cores de texto
-  static const Color textPrimary = Color(0xFFFFFFFF);   // Branco (sua preferência)
-  static const Color textSecondary = Color(0xFF5D4B7C);  // #5d4b7c - Roxo claro para texto secundário
-  static const Color textHint = Color(0xFFBDBDBD);       // Cinza claro (mantido)
+  static const Color textPrimary = Color(0xFFFFFFFF);  
+  static const Color textSecondary = Color(0xFF5D4B7C); 
+  static const Color textHint = Color(0xFF9E9E9E);     
   
-  // Cores específicas para telemetria
-  static const Color speedColor = Color(0xFF4CAF50);    // Verde para velocidade (mantido)
-  static const Color accelerationColor = Color(0xFFFF9800); // Laranja para aceleração (mantido)
-  static const Color headingColor = Color(0xFF5438AC);  // Sua cor principal para direção
-  static const Color mapColor = Color(0xFF261055);      // Sua cor escura para mapa
+  // Cores de fundo
+  static const Color background = Color(0xFF1A0B2E);   
+  static const Color surface = Color(0xFF2D1B69);      
+  static const Color surfaceLight = Color(0xFF3D2B79); 
   
-  // Cores adicionais 
-  static const Color purpleLight = Color(0xFF5D4B7C);   // #5d4b7c - Roxo claro
-  static const Color purpleMedium = Color(0xFF5337AB);  // #5337ab - Roxo médio
-  static const Color purpleDark = Color(0xFF261055);    // #261055 - Roxo escuro
-  static const Color purplePrimary = Color(0xFF5438AC); // #5438ac - Roxo principal
+  // Cores para painéis semi-transparentes
+  static const Color panelOverlay = Color(0x80261055);  
+  static const Color panelOverlayLight = Color(0xB35438AC); 
+  
+  // Cores para mapas
+  static const Color mapRoute = Color(0xFF9C27B0);      
+  static const Color mapCurrentLocation = Color(0xFF2196F3); 
 }

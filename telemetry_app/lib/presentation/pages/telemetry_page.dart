@@ -1,14 +1,11 @@
-// lib/presentation/pages/telemetry_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/telemetry_provider.dart';
 import '../widgets/map_view.dart';
 import '../widgets/telemetry_info_card.dart';
+import '../widgets/mobs2_logo.dart';
 import '../../core/theme/colors.dart';
 
-/// Tela principal do app de telemetria
-/// Exibe mapa, dados e controles de coleta
 class TelemetryPage extends StatefulWidget {
   const TelemetryPage({super.key});
 
@@ -17,11 +14,9 @@ class TelemetryPage extends StatefulWidget {
 }
 
 class _TelemetryPageState extends State<TelemetryPage> {
-  
   @override
   void initState() {
     super.initState();
-    // Inicializa o Provider quando a tela é criada
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<TelemetryProvider>().initialize();
     });
@@ -31,232 +26,128 @@ class _TelemetryPageState extends State<TelemetryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: _buildAppBar(),
-      body: _buildBody(),
-      floatingActionButton: _buildFloatingActionButton(),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      title: const Text('Telemetria'),
-      centerTitle: true,
-      backgroundColor: AppColors.primary,
-      foregroundColor: AppColors.textPrimary,
-      elevation: 0,
-    );
-  }
-
-  Widget _buildBody() {
-    return Consumer<TelemetryProvider>(
-      builder: (context, provider, child) {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Consumer<TelemetryProvider>(
+        builder: (context, provider, child) {
+          return Stack(
             children: [
-              // Mapa
-              MapView(
-                currentLocation: provider.currentLocation,
-                isLoading: provider.isCollecting && provider.currentLocation == null,
-                errorMessage: provider.errorMessage,
+              // Mapa ocupando toda a tela
+              Positioned.fill(
+                child: MapView(
+                  currentLocation: provider.currentLocation,
+                  isLoading: provider.isCollecting,
+                  errorMessage: provider.errorMessage,
+                ),
               ),
               
-              const SizedBox(height: 16),
-              
-              // Card com dados de telemetria
-              TelemetryInfoCard(
-                currentLocation: provider.currentLocation,
-                currentAcceleration: provider.currentAcceleration,
-                currentHeading: provider.currentHeading,
-                isCollecting: provider.isCollecting,
+              // Painel superior (status + logo)
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 16,
+                left: 16,
+                right: 16,
+                child: _buildStatusPanel(provider),
               ),
               
-              const SizedBox(height: 16),
+              // Painel inferior (dados de telemetria)
+              Positioned(
+                bottom: MediaQuery.of(context).padding.bottom + 16,
+                left: 0,
+                right: 0,
+                child: TelemetryInfoCard(
+                  currentLocation: provider.currentLocation,
+                  currentAcceleration: provider.currentAcceleration,
+                  currentHeading: provider.currentHeading,
+                  isCollecting: provider.isCollecting,
+                ),
+              ),
               
-              // Status e controles
-              _buildStatusSection(provider),
-              
-              const SizedBox(height: 16),
-              
-              // Informações adicionais
-              _buildInfoSection(provider),
+              // Botão flutuante de controle
+              Positioned(
+                bottom: MediaQuery.of(context).padding.bottom + 200,
+                right: 16,
+                child: _buildControlButton(provider),
+              ),
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildStatusSection(TelemetryProvider provider) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+  Widget _buildStatusPanel(TelemetryProvider provider) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.panelOverlay,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Status da Coleta',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            
-            // Status das permissões
-            Row(
+      child: Row(
+        children: [
+          // Logo da MOBS2
+          Mobs2Logo(
+            width: 80,
+            height: 30,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  provider.hasPermissions ? Icons.check_circle : Icons.cancel,
-                  color: provider.hasPermissions ? AppColors.success : AppColors.error,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
                 Text(
-                  provider.hasPermissions ? 'Permissões concedidas' : 'Permissões necessárias',
-                  style: TextStyle(
-                    color: provider.hasPermissions ? AppColors.success : AppColors.error,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                  'Telemetria Inteligente',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
+                Text(
+                  provider.hasPermissions 
+                    ? 'GPS Ativo' 
+                    : 'Aguardando permissões',
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ],
             ),
-            
-            const SizedBox(height: 8),
-            
-            // Status da coleta
-            Row(
-              children: [
-                Icon(
-                  provider.isCollecting ? Icons.play_circle : Icons.pause_circle,
-                  color: provider.isCollecting ? AppColors.success : AppColors.warning,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  provider.isCollecting ? 'Coletando dados' : 'Coleta parada',
-                  style: TextStyle(
-                    color: provider.isCollecting ? AppColors.success : AppColors.warning,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            
-            // Mensagem de erro
-            if (provider.errorMessage != null) ...[
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.error.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: AppColors.error,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        provider.errorMessage!,
-                        style: TextStyle(
-                          color: AppColors.error,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => provider.clearError(),
-                      icon: Icon(
-                        Icons.close,
-                        color: AppColors.error,
-                        size: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoSection(TelemetryProvider provider) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Informações',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            
-            Text(
-              '• Toque no botão flutuante para iniciar/parar a coleta\n'
-              '• O app precisa de permissão de localização\n'
-              '• Os dados são atualizados em tempo real\n'
-              '• Para melhor precisão, mantenha o GPS ligado',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 12,
-                height: 1.4,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFloatingActionButton() {
-    return Consumer<TelemetryProvider>(
-      builder: (context, provider, child) {
-        return FloatingActionButton.extended(
-          onPressed: () => _handleToggleTelemetry(provider),
-          backgroundColor: provider.isCollecting ? AppColors.error : AppColors.primary,
-          foregroundColor: AppColors.textPrimary,
-          icon: Icon(
-            provider.isCollecting ? Icons.stop : Icons.play_arrow,
           ),
-          label: Text(
-            provider.isCollecting ? 'Parar Coleta' : 'Iniciar Coleta',
-          ),
-        );
-      },
+          if (provider.errorMessage != null)
+            Icon(
+              Icons.error_outline,
+              color: AppColors.error,
+              size: 20,
+            ),
+        ],
+      ),
     );
   }
 
-  void _handleToggleTelemetry(TelemetryProvider provider) {
+  Widget _buildControlButton(TelemetryProvider provider) {
+    return FloatingActionButton(
+      onPressed: () => _handleToggleTelemetry(provider),
+      backgroundColor: provider.isCollecting 
+        ? AppColors.error 
+        : AppColors.success,
+      child: Icon(
+        provider.isCollecting ? Icons.stop : Icons.play_arrow,
+        color: AppColors.textPrimary,
+        size: 28,
+      ),
+    );
+  }
+
+  void _handleToggleTelemetry(TelemetryProvider provider) async {
     if (provider.isCollecting) {
-      provider.stopTelemetry();
+      await provider.stopTelemetry();
     } else {
-      provider.startTelemetry();
+      if (!provider.hasPermissions) {
+        await provider.requestPermissions();
+      }
+      await provider.startTelemetry();
     }
   }
 }
