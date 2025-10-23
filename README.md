@@ -130,6 +130,7 @@ Quero agradecer à MOBS2 pela oportunidade de participar deste processo seletivo
 
 Foi uma experiência muito boa e me ajudou a crescer como desenvolvedor. Obrigado pela confiança!
 
----
+---<img width="379" height="883" alt="image" src="https://github.com/user-attachments/assets/e268ffaa-20d0-4fc5-afcc-068051028a16" />
+
 
 *Desenvolvido para MOBS2*
