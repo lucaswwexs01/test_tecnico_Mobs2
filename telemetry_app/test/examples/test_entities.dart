@@ -1,14 +1,13 @@
-// test/examples/test_entities.dart
-
+import 'package:flutter/foundation.dart';
 import 'package:telemetry_app/domain/entities/location.dart';
 import 'package:telemetry_app/domain/entities/acceleration.dart';
 import 'package:telemetry_app/domain/entities/heading.dart';
 
 void main() {
-  print(' Testando Entities...\n');
+  debugPrint('Testando Entities...\n');
   
   // Teste 1: Location
-  print('📍 Testando Location:');
+  debugPrint(' Testando Location:');
   final location1 = Location(
     latitude: -23.5505,
     longitude: -46.6333,
@@ -25,15 +24,15 @@ void main() {
     timestamp: DateTime.now(),
   );
   
-  print('  - Location 1: $location1');
-  print('  - Location 2: $location2');
-  print('  - Speed em km/h: ${location1.speedKmh} km/h');
-  print('  - É válida: ${location1.isValid}');
-  print('  - Distância entre elas: ${location1.distanceTo(location2).toStringAsFixed(2)} metros');
-  print('');
+  debugPrint('  - Location 1: $location1');
+  debugPrint('  - Location 2: $location2');
+  debugPrint('  - Speed em km/h: ${location1.speedKmh} km/h');
+  debugPrint('  - É válida: ${location1.isValid}');
+  debugPrint('  - Distância entre elas: ${location1.distanceTo(location2).toStringAsFixed(2)} metros');
+  debugPrint('');
   
   // Teste 2: Acceleration
-  print('Testando Acceleration:');
+  debugPrint(' Testando Acceleration:');
   final acceleration = Acceleration(
     x: 2.0,
     y: 3.0,
@@ -41,15 +40,15 @@ void main() {
     timestamp: DateTime.now(),
   );
   
-  print('  - Acceleration: $acceleration');
-  print('  - Magnitude: ${acceleration.magnitude.toStringAsFixed(2)} m/s²');
-  print('  - Sem gravidade: ${acceleration.magnitudeWithoutGravity.toStringAsFixed(2)} m/s²');
-  print('  - É significativa: ${acceleration.isSignificant()}');
-  print('  - Direção: ${acceleration.direction.toStringAsFixed(0)}°');
-  print('');
+  debugPrint('  - Acceleration: $acceleration');
+  debugPrint('  - Magnitude: ${acceleration.magnitude.toStringAsFixed(2)} m/s²');
+  debugPrint('  - Sem gravidade: ${acceleration.magnitudeWithoutGravity.toStringAsFixed(2)} m/s²');
+  debugPrint('  - É significativa: ${acceleration.isSignificant()}');
+  debugPrint('  - Direção: ${acceleration.direction.toStringAsFixed(0)}°');
+  debugPrint('');
   
   // Teste 3: Heading
-  print(' Testando Heading:');
+  debugPrint('Testando Heading:');
   final heading1 = Heading(
     degrees: 0.0, // Norte
     timestamp: DateTime.now(),
@@ -65,12 +64,12 @@ void main() {
     timestamp: DateTime.now(),
   );
   
-  print('  - Heading 1 (0°): $heading1');
-  print('  - Heading 2 (90°): $heading2');
-  print('  - Heading 3 (225°): $heading3');
-  print('  - É válido: ${heading1.isValid}');
-  print('  - Diferença entre 0° e 90°: ${heading1.angleDifference(heading2)}°');
-  print('');
+  debugPrint('  - Heading 1 (0°): $heading1');
+  debugPrint('  - Heading 2 (90°): $heading2');
+  debugPrint('  - Heading 3 (225°): $heading3');
+  debugPrint('  - É válido: ${heading1.isValid}');
+  debugPrint('  - Diferença entre 0° e 90°: ${heading1.angleDifference(heading2)}°');
+  debugPrint('');
   
-  print('Todos os testes concluídos!');
+  debugPrint('✅ Todos os testes concluídos!');
 }
