@@ -16,6 +16,12 @@
         android:label="telemetry_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAIRovLN3OCiYiaAvH3KSQf1bLEhn696QQ" />
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -41,7 +47,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-    <
+    
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
